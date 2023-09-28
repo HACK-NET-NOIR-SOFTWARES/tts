@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
 <link rel="stylesheet" href="style/index.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lamejs/1.2.0/lame.all.min.js"></script>
 <style>
 body,h1 {font-family: "Raleway", sans-serif}
 body, html {height: 100%}
@@ -108,8 +109,29 @@ body, html {height: 100%}
 
     // Create a new Blob object from the audio element's src
     fetch(audioPlayer.src)
-      .then(response => response.blob())
-      .then(blob => {
+      .then(response => response.arrayBuffer())
+      .then(arrayBuffer => {
+        // Encode the audio data as MP3 using lamejs
+        var mp3encoder = new lamejs.Mp3Encoder(1, 44100, 128);
+        var mp3Data = [];
+        var samples = new Int16Array(arrayBuffer);
+
+        var sampleBlockSize = 1152;
+        for (var i = 0; i < samples.length; i += sampleBlockSize) {
+          var sampleChunk = samples.subarray(i, i + sampleBlockSize);
+          var mp3buf = mp3encoder.encodeBuffer(sampleChunk);
+          if (mp3buf.length > 0) {
+            mp3Data.push(mp3buf);
+          }
+        }
+
+        var mp3buf = mp3encoder.flush();
+        if (mp3buf.length > 0) {
+          mp3Data.push(mp3buf);
+        }
+
+        var blob = new Blob(mp3Data, { type: 'audio/mp3' });
+
         // Create a URL for the Blob and set it as the download link's href
         var blobURL = URL.createObjectURL(blob);
         downloadLink.href = blobURL;
