@@ -1,0 +1,65 @@
+.bgimg {
+    background-image: url('image/1.jpg');
+  }
+  
+  .container {
+    margin: 0px auto;
+    max-width: 600px;
+    text-align: center;
+  }
+  
+  textarea {
+    width: 100%;
+    height: 200px;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    position: relative;
+  }
+  
+  textarea:focus {
+    outline: none;
+  }
+  
+  .btn {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn:hover {
+    background-color: #45a049;
+  }
+  
+  .section2 {
+    background-color: #E1F5FE;
+  }
+  
+  .textareaBor {
+    border: 1px solid;
+    border-color: white;
+    background-color: white;
+  }
+  
+  .nubCouWord {
+    position: relative;
+    bottom: 100%;
+    left: 5%;
+    font-weight: bolder;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  }
+  
+  .nubCouText {
+    position: relative;
+    bottom: 100%;
+    right: 5%;
+    font-weight: bolder;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  }
+  
+  
