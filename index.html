@@ -16,9 +16,10 @@ body, html {height: 100%}
   background-position: center;
   background-size: cover;
 }
+/* Add your other CSS styles here */
 </style>
 </head>
-
+<body>
 <div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
   <div class="w3-display-topleft w3-padding-large w3-xlarge">
     Logo
@@ -37,123 +38,112 @@ body, html {height: 100%}
   <div class="container">
     <h1>Text-to-Speech (TTS)</h1>
     <div class="textareaBor">
-    <textarea id="inputText" placeholder="Enter your text here" oninput="count()"></textarea>
-    <span class="nubCouText" id="nubCouText">Number of letters: 0</span>
-    <span class="nubCouWord" id="nubCouWord">Number of words: 0</span>
+      <textarea id="inputText" placeholder="Enter your text here" oninput="count()"></textarea>
+      <span class="nubCouText" id="nubCouText">Number of letters: 0</span>
+      <span class="nubCouWord" id="nubCouWord">Number of words: 0</span>
     </div>
     <br>
     <button class="btn" onclick="speakText()">Speak</button>
     <select id="voiceList"></select>
     <br>
-    <a id="downloadLink"></a>
+    <a id="downloadLink" style="display: none;"></a>
     <br>
-    <button id="downloadButton" onclick="downloadSpeech()">Download</button>
-
+    <button id="downloadButton" onclick="downloadSpeech()" style="display: none;">Download</button>
   </div>
+</div>
 
-  <script src="https://code.responsivevoice.org/responsivevoice.js?key=fGTLSgNS"></script>
-  <script>
-    function displayVoices() {
-      var voices = responsiveVoice.getVoices();
-      var voiceList = document.getElementById('voiceList');
-
-      // Clear any previous options
-      voiceList.innerHTML = '';
-
-      // Populate the select with voices
-      for (var i = 0; i < voices.length; i++) {
-        var voice = voices[i];
-        var option = document.createElement('option');
-        option.value = voice.name;
-
-        if (voice.lang) {
-          option.text = voice.name + ' (' + voice.lang + ')';
-        } else {
-          option.text = voice.name;
-        }
-
-        voiceList.appendChild(option);
-      }
-    }
-
-    // Call the function to display available voices
-    displayVoices();
-
-
-    function speakText() {
-      var inputText = document.getElementById('inputText').value;
-      var selectedVoice = document.getElementById('voiceList').value;
-      var fileName = 'speech.mp3'; // Change the filename as desired
-      responsiveVoice.speak(inputText, selectedVoice);
-
-
-      responsiveVoice.speak(inputText, selectedVoice, {
-        onend: function() {
-          var audioData = responsiveVoice.voiceSupport() === 'native' ? responsiveVoice.audio : responsiveVoice.responsive_audio;
-          var audioBlob = base64ToBlob(audioData, 'audio/mpeg');
-          var downloadLink = document.getElementById('downloadLink');
-          downloadLink.href = URL.createObjectURL(audioBlob);
-          downloadLink.download = fileName;
-          downloadLink.style.display = 'inline';
-
-          var downloadButton = document.getElementById('downloadButton');
-          downloadButton.style.display = 'inline';
-        }
-      });
-    }
-
-    function base64ToBlob(base64Data, contentType) {
-      var sliceSize = 1024;
-      var byteCharacters = atob(base64Data);
-      var byteArrays = [];
-
-      for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-        var slice = byteCharacters.slice(offset, offset + sliceSize);
-
-        var byteNumbers = new Array(slice.length);
-        for (var i = 0; i < slice.length; i++) {
-          byteNumbers[i] = slice.charCodeAt(i);
-        }
-
-        var byteArray = new Uint8Array(byteNumbers);
-        byteArrays.push(byteArray);
-      }
-
-      var blob = new Blob(byteArrays, { type: contentType });
-      return blob;
-    }
-
-    function downloadSpeech() {
-      var downloadLink = document.getElementById('downloadLink');
-      downloadLink.click();
-    }
-
-    // Call the function to populate the voice list
-    populateVoiceList();
-
-  </script>
-
+<script src="https://code.responsivevoice.org/responsivevoice.js?key=fGTLSgNS"></script>
 <script>
+  function displayVoices() {
+    var voices = responsiveVoice.getVoices();
+    var voiceList = document.getElementById('voiceList');
+
+    // Clear any previous options
+    voiceList.innerHTML = '';
+
+    // Populate the select with voices
+    for (var i = 0; i < voices.length; i++) {
+      var voice = voices[i];
+      var option = document.createElement('option');
+      option.value = voice.name;
+
+      if (voice.lang) {
+        option.text = voice.name + ' (' + voice.lang + ')';
+      } else {
+        option.text = voice.name;
+      }
+
+      voiceList.appendChild(option);
+    }
+  }
+
+  function speakText() {
+    var inputText = document.getElementById('inputText').value;
+    var selectedVoice = document.getElementById('voiceList').value;
+    var fileName = 'speech.mp3'; // Change the filename as desired
+
+    responsiveVoice.speak(inputText, selectedVoice, {
+      onend: function () {
+        var audioData = responsiveVoice.voiceSupport() === 'native' ? responsiveVoice.audio : responsiveVoice.responsive_audio;
+        var audioBlob = base64ToBlob(audioData, 'audio/mpeg');
+        var downloadLink = document.getElementById('downloadLink');
+        downloadLink.href = URL.createObjectURL(audioBlob);
+        downloadLink.download = fileName;
+        downloadLink.style.display = 'inline';
+
+        var downloadButton = document.getElementById('downloadButton');
+        downloadButton.style.display = 'inline';
+      }
+    });
+  }
+
+  function downloadSpeech() {
+    var downloadLink = document.getElementById('downloadLink');
+    downloadLink.click();
+  }
+
+  function base64ToBlob(base64Data, contentType) {
+    var sliceSize = 1024;
+    var byteCharacters = atob(base64Data);
+    var byteArrays = [];
+
+    for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+      var byteNumbers = new Array(slice.length);
+      for (var i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+
+      var byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
+    }
+
+    var blob = new Blob(byteArrays, { type: contentType });
+    return blob;
+  }
+
   function count() {
-    countText()
-    countWords()
+    countText();
+    countWords();
   }
 
   function countWords() {
-    let inputText = document.getElementById('inputText').value;
-    let words = inputText.trim().split(/\s+/); // Split the text by whitespace
-    let wordCount = words.length;
+    var inputText = document.getElementById('inputText').value;
+    var words = inputText.trim().split(/\s+/); // Split the text by whitespace
+    var wordCount = words.length;
     document.getElementById('nubCouWord').textContent = "Number of words: " + wordCount;
   }
 
   function countText() {
-    let inputText = document.getElementById('inputText').value;
-    let words = inputText.split('')
-    let wordCount = words.length;
-    document.getElementById('nubCouText').textContent = "Number of text: " + wordCount;
+    var inputText = document.getElementById('inputText').value;
+    var textLength = inputText.length;
+    document.getElementById('nubCouText').textContent = "Number of letters: " + textLength;
   }
+
+  // Call the function to populate the voice list
+  displayVoices();
 </script>
-</div>
 
 </body>
 </html>
