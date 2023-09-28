@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>W3.CSS Template</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<link rel="stylesheet" href="style/index.css">
+<style>
+body,h1 {font-family: "Raleway", sans-serif}
+body, html {height: 100%}
+.bgimg {
+  background-image: url('image/1.jpg');
+  min-height: 100%;
+  background-position: center;
+  background-size: cover;
+}
+</style>
+</head>=AI
+
+<div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
+  <div class="w3-display-topleft w3-padding-large w3-xlarge">
+    Logo
+  </div>
+  <div class="w3-display-middle">
+    <h1 class="w3-jumbo w3-animate-top">SK AI</h1>
+    <hr class="w3-border-grey" style="margin:auto;width:40%">
+    <p class="w3-large w3-center">Best TTS and STT in the planet</p>
+  </div>
+  <div class="w3-display-bottomleft w3-padding-large">
+    Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">TEXAS ROBOT (Trade ai)</a>
+  </div>
+</div>
+
+<div class="section2">
+  <div class="container">
+    <h1>Text-to-Speech (TTS)</h1>
+    <div class="textareaBor">
+    <textarea id="inputText" placeholder="Enter your text here" oninput="count()"></textarea>
+    <span class="nubCouText" id="nubCouText">Number of letters: 0</span>
+    <span class="nubCouWord" id="nubCouWord">Number of words: 0</span>
+    </div>
+    <br>
+    <button class="btn" onclick="speakText()">Speak</button>
+    <select id="voiceList"></select>
+    <br>
+    <a id="downloadLink" style="display: none;"></a>
+    <br>
+    <button id="downloadButton" style="display: none;" onclick="downloadSpeech()">Download</button>
+
+  </div>
+
+  <script src="https://code.responsivevoice.org/responsivevoice.js?key=fGTLSgNS"></script>
+  <script>
+    function displayVoices() {
+      var voices = responsiveVoice.getVoices();
+      var voiceList = document.getElementById('voiceList');
+
+      // Clear any previous options
+      voiceList.innerHTML = '';
+
+      // Populate the select with voices
+      for (var i = 0; i < voices.length; i++) {
+        var voice = voices[i];
+        var option = document.createElement('option');
+        option.value = voice.name;
+
+        if (voice.lang) {
+          option.text = voice.name + ' (' + voice.lang + ')';
+        } else {
+          option.text = voice.name;
+        }
+
+        voiceList.appendChild(option);
+      }
+    }
+
+    // Call the function to display available voices
+    displayVoices();
+
+
+    function speakText() {
+      var inputText = document.getElementById('inputText').value;
+      var selectedVoice = document.getElementById('voiceList').value;
+      var fileName = 'speech.mp3'; // Change the filename as desired
+      responsiveVoice.speak(inputText, selectedVoice);
+
+
+      responsiveVoice.speak(inputText, selectedVoice, {
+        onend: function() {
+          var audioData = responsiveVoice.voiceSupport() === 'native' ? responsiveVoice.audio : responsiveVoice.responsive_audio;
+          var audioBlob = base64ToBlob(audioData, 'audio/mpeg');
+          var downloadLink = document.getElementById('downloadLink');
+          downloadLink.href = URL.createObjectURL(audioBlob);
+          downloadLink.download = fileName;
+          downloadLink.style.display = 'inline';
+
+          var downloadButton = document.getElementById('downloadButton');
+          downloadButton.style.display = 'inline';
+        }
+      });
+    }
+
+    function base64ToBlob(base64Data, contentType) {
+      var sliceSize = 1024;
+      var byteCharacters = atob(base64Data);
+      var byteArrays = [];
+
+      for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+        var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+        var byteNumbers = new Array(slice.length);
+        for (var i = 0; i < slice.length; i++) {
+          byteNumbers[i] = slice.charCodeAt(i);
+        }
+
+        var byteArray = new Uint8Array(byteNumbers);
+        byteArrays.push(byteArray);
+      }
+
+      var blob = new Blob(byteArrays, { type: contentType });
+      return blob;
+    }
+
+    function downloadSpeech() {
+      var downloadLink = document.getElementById('downloadLink');
+      downloadLink.click();
+    }
+
+    // Call the function to populate the voice list
+    populateVoiceList();
+
+  </script>
+
+<script>
+  function count() {
+    countText()
+    countWords()
+  }
+
+  function countWords() {
+    let inputText = document.getElementById('inputText').value;
+    let words = inputText.trim().split(/\s+/); // Split the text by whitespace
+    let wordCount = words.length;
+    document.getElementById('nubCouWord').textContent = "Number of words: " + wordCount;
+  }
+
+  function countText() {
+    let inputText = document.getElementById('inputText').value;
+    let words = inputText.split('')
+    let wordCount = words.length;
+    document.getElementById('nubCouText').textContent = "Number of text: " + wordCount;
+  }
+</script>
+</div>
+
+</body>
+</html>
