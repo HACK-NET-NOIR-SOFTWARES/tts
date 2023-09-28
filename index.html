@@ -103,24 +103,15 @@ body, html {height: 100%}
   }
 
   function base64ToBlob(base64Data, contentType) {
-    var sliceSize = 1024;
-    var byteCharacters = atob(base64Data);
-    var byteArrays = [];
+    const byteCharacters = atob(base64Data);
+    const byteNumbers = new Array(byteCharacters.length);
 
-    for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-      var slice = byteCharacters.slice(offset, offset + sliceSize);
-
-      var byteNumbers = new Array(slice.length);
-      for (var i = 0; i < slice.length; i++) {
-        byteNumbers[i] = slice.charCodeAt(i);
-      }
-
-      var byteArray = new Uint8Array(byteNumbers);
-      byteArrays.push(byteArray);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
     }
 
-    var blob = new Blob(byteArrays, { type: contentType });
-    return blob;
+    const byteArray = new Uint8Array(byteNumbers);
+    return new Blob([byteArray], { type: contentType });
   }
 
   function count() {
