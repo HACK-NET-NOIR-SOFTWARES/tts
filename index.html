@@ -84,8 +84,7 @@ body, html {height: 100%}
 
     responsiveVoice.speak(inputText, selectedVoice, {
       onend: function () {
-        var audioData = responsiveVoice.voiceSupport() === 'native' ? responsiveVoice.audio : responsiveVoice.responsive_audio;
-        var audioBlob = base64ToBlob(audioData, 'audio/mpeg');
+        var audioBlob = new Blob([responsiveVoice.blob], { type: 'audio/mpeg' });
         var downloadLink = document.getElementById('downloadLink');
         downloadLink.href = URL.createObjectURL(audioBlob);
         downloadLink.download = fileName;
@@ -100,18 +99,6 @@ body, html {height: 100%}
   function downloadSpeech() {
     var downloadLink = document.getElementById('downloadLink');
     downloadLink.click();
-  }
-
-  function base64ToBlob(base64Data, contentType) {
-    const byteCharacters = atob(base64Data);
-    const byteNumbers = new Array(byteCharacters.length);
-
-    for (let i = 0; i < byteCharacters.length; i++) {
-      byteNumbers[i] = byteCharacters.charCodeAt(i);
-    }
-
-    const byteArray = new Uint8Array(byteNumbers);
-    return new Blob([byteArray], { type: contentType });
   }
 
   function count() {
