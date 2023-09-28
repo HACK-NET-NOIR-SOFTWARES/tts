@@ -46,6 +46,7 @@ body, html {height: 100%}
     <button class="btn" onclick="speakText()">Speak</button>
     <select id="voiceList"></select>
     <br>
+    <audio id="audioPlayer" controls style="display: none"></audio>
     <a id="downloadLink" style="display: none;"></a>
     <br>
     <button id="downloadButton" onclick="downloadSpeech()" style="display: none;">Download</button>
@@ -80,25 +81,40 @@ body, html {height: 100%}
   function speakText() {
     var inputText = document.getElementById('inputText').value;
     var selectedVoice = document.getElementById('voiceList').value;
-    var fileName = 'speech.mp3'; // Change the filename as desired
 
+    // Create a new audio element
+    var audioPlayer = document.getElementById('audioPlayer');
+    audioPlayer.style.display = 'block';
+
+    // Speak the text and set the audio element as the source
     responsiveVoice.speak(inputText, selectedVoice, {
       onend: function () {
-        var audioBlob = new Blob([responsiveVoice.blob], { type: 'audio/mpeg' });
-        var downloadLink = document.getElementById('downloadLink');
-        downloadLink.href = URL.createObjectURL(audioBlob);
-        downloadLink.download = fileName;
-        downloadLink.style.display = 'inline';
+        audioPlayer.src = responsiveVoice.voiceSupport() === 'native' ? responsiveVoice.audio : responsiveVoice.responsive_audio;
+        audioPlayer.play();
 
-        var downloadButton = document.getElementById('downloadButton');
-        downloadButton.style.display = 'inline';
+        // Display the download button and download link
+        document.getElementById('downloadButton').style.display = 'inline';
+        var downloadLink = document.getElementById('downloadLink');
+        downloadLink.href = audioPlayer.src;
+        downloadLink.download = 'speech.mp3';
+        downloadLink.style.display = 'inline';
       }
     });
   }
 
   function downloadSpeech() {
+    var audioPlayer = document.getElementById('audioPlayer');
     var downloadLink = document.getElementById('downloadLink');
-    downloadLink.click();
+
+    // Create a new Blob object from the audio element's src
+    fetch(audioPlayer.src)
+      .then(response => response.blob())
+      .then(blob => {
+        // Create a URL for the Blob and set it as the download link's href
+        var blobURL = URL.createObjectURL(blob);
+        downloadLink.href = blobURL;
+        downloadLink.click();
+      });
   }
 
   function count() {
